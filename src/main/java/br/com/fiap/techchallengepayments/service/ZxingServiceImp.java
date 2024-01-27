@@ -1,6 +1,6 @@
 package br.com.fiap.techchallengepayments.service;
 
-import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
+import br.com.fiap.techchallengepayments.exception.LibException;
 import br.com.fiap.techchallengepayments.service.interfaces.ZxingService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -20,7 +20,7 @@ import java.util.EnumMap;
 
 @Service
 public class ZxingServiceImp implements ZxingService {
-    private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZxingServiceImp.class);
 
     @Override
     public byte[] generateQrCode(String link) {
@@ -40,7 +40,7 @@ public class ZxingServiceImp implements ZxingService {
             String errorMessage = "Error to generate QRCode with zxing lib";
             logger.error(errorMessage, e);
 
-            throw new FailedDependencyException(errorMessage);
+            throw new LibException(errorMessage);
         }
     }
 }

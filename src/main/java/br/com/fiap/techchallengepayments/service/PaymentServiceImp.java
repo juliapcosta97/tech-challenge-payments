@@ -2,6 +2,7 @@ package br.com.fiap.techchallengepayments.service;
 
 import br.com.fiap.techchallengepayments.config.AppConfig;
 import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
+import br.com.fiap.techchallengepayments.exception.LibException;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
@@ -33,10 +34,11 @@ public class PaymentServiceImp implements PaymentService {
             PaymentLinkDTO link = generatePaymentLink(preferenceDTO);
             return zxingServiceImp.generateQrCode(link.getPaymentUrl());
 
-        } catch (FailedDependencyException e) {
+        } catch (LibException e) {
             String errorMessage = String.format("%s in order_id: %s", e.getMessage(), preferenceDTO.getOrderId());
             logger.error(errorMessage, e);
-            throw e;
+
+            throw new FailedDependencyException(errorMessage);
         }
     }
 
