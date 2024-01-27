@@ -24,8 +24,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
 import static br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequest.getPreferenceRequest;
 
@@ -43,14 +42,15 @@ public class PaymentServiceImp implements PaymentService {
         try {
             PaymentLinkDTO link = generatePaymentLink(preferenceDTO);
 
-            Map<EncodeHintType, Object> hints = new HashMap<>();
+            EnumMap<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
             hints.put(EncodeHintType.MARGIN, 1);
-            BitMatrix bitMatrix = new MultiFormatWriter().encode(link.getPaymentUrl(), BarcodeFormat.QR_CODE, 300, 300, hints);
 
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(link.getPaymentUrl(), BarcodeFormat.QR_CODE, 300, 300, hints);
             BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+
             return byteArrayOutputStream.toByteArray();
 
         } catch (IOException | WriterException e) {
