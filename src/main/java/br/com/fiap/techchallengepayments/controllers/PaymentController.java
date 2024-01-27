@@ -23,13 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/api/payment")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-@Tag(name = "Pagamento", description = "Servico de gera o QRCode de pagamento")
 public class PaymentController {
 
     private final PaymentService paymentService;
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "QRCode gerado",
+            @ApiResponse(responseCode = "201", description = "QRCode gerado com sucesso",
                     content = {
                             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = byte[].class))
                     }),
@@ -49,14 +48,15 @@ public class PaymentController {
                     }
             )
     })
-    @PostMapping(name = "/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
+    @Tag(name = "Pagamento via QRCode", description = "Servico para geracao da imagem do QRCode para pagamento no Mercado Pago")
+    @PostMapping(path = "/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public byte[] generateQrCode(@Valid @RequestBody PreferenceDTO preference) {
         return paymentService.generateQrCode(preference);
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "QRCode gerado",
+            @ApiResponse(responseCode = "201", description = "Link de pagamento gerado com sucesso",
                     content = {
                             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = byte[].class))
                     }),
@@ -76,8 +76,9 @@ public class PaymentController {
                     }
             )
     })
-    @PostMapping(name = "/link")
+    @PostMapping("/link")
     @ResponseStatus(HttpStatus.CREATED)
+    @Tag(name = "Link de pagamento", description = "Servico para geracao do link de pagamento no Mercado Pago")
     public PaymentLinkDTO generatePaymentLink(@Valid @RequestBody PreferenceDTO preference) {
         return paymentService.generatePaymentLink(preference);
     }
