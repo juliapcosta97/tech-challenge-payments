@@ -1,5 +1,6 @@
 package br.com.fiap.techchallengepayments.service;
 
+import br.com.fiap.techchallengepayments.config.AppConfig;
 import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
@@ -33,7 +34,7 @@ import static br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoReq
 public class PaymentServiceImp implements PaymentService {
 
     private final MercadoPagoClient mercadoPagoClient;
-    private final String TOKEN = "Bearer APP_USR-5794504251677195-090418-29a226dab9ebb77593eb98dc48213cb3-264549210";
+    private final AppConfig appConfig;
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImp.class);
 
@@ -65,7 +66,7 @@ public class PaymentServiceImp implements PaymentService {
         MercadoPagoRequest mercadoPagoRequest = getPreferenceRequest(preferenceDTO);
 
         try {
-            MercadoPagoResponse mercadoPagoResponse = mercadoPagoClient.createPreference(mercadoPagoRequest, TOKEN);
+            MercadoPagoResponse mercadoPagoResponse = mercadoPagoClient.createPreference(mercadoPagoRequest, appConfig.getToken());
             String paymentUrl = mercadoPagoResponse.getInitPoint();
 
             return PaymentLinkDTO.builder().paymentUrl(paymentUrl).build();
