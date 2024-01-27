@@ -1,5 +1,7 @@
 package br.com.fiap.techchallengepayments.service;
 
+import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
+import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
 import br.com.fiap.techchallengepayments.service.rest.MercadoPagoClient;
@@ -12,6 +14,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +35,16 @@ public class PaymentServiceImp implements PaymentService {
     private final MercadoPagoClient mercadoPagoClient;
     private final String TOKEN = "Bearer APP_USR-5794504251677195-090418-29a226dab9ebb77593eb98dc48213cb3-264549210";
 
+    private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImp.class);
+
     @Override
     public byte[] generateQrCode(PreferenceDTO preferenceDTO) {
         try {
-            String link = generatePaymentLink(preferenceDTO);
+            PaymentLinkDTO link = generatePaymentLink(preferenceDTO);
 
             Map<EncodeHintType, Object> hints = new HashMap<>();
             hints.put(EncodeHintType.MARGIN, 1);
-            BitMatrix bitMatrix = new MultiFormatWriter().encode(link, BarcodeFormat.QR_CODE, 300, 300, hints);
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(link.getPaymentUrl(), BarcodeFormat.QR_CODE, 300, 300, hints);
 
             BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
@@ -47,19 +53,28 @@ public class PaymentServiceImp implements PaymentService {
             return byteArrayOutputStream.toByteArray();
 
         } catch (IOException | WriterException e) {
-            return null;
+            String errorMessage = String.format("Error to generate QRCode with zxing lib in order_id: %s", preferenceDTO.getOrderId());
+            logger.error(errorMessage, e);
+
+            throw new FailedDependencyException(errorMessage);
         }
     }
 
     @Override
-    public String generatePaymentLink(PreferenceDTO preferenceDTO) {
+    public PaymentLinkDTO generatePaymentLink(PreferenceDTO preferenceDTO) {
         MercadoPagoRequest mercadoPagoRequest = getPreferenceRequest(preferenceDTO);
 
         try {
             MercadoPagoResponse mercadoPagoResponse = mercadoPagoClient.createPreference(mercadoPagoRequest, TOKEN);
-            return mercadoPagoResponse.getInitPoint();
+            String paymentUrl = mercadoPagoResponse.getInitPoint();
+
+            return PaymentLinkDTO.builder().paymentUrl(paymentUrl).build();
+
         } catch (Exception e) {
-            throw e;
+            String errorMessage = String.format("Error in Mercado Pago api call in order_id: %s", preferenceDTO.getOrderId());
+            logger.error(errorMessage, e);
+
+            throw new FailedDependencyException(errorMessage);
         }
     }
 }

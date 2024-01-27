@@ -11,5 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface MercadoPagoClient {
 
     @PostMapping("/checkout/preferences")
-    MercadoPagoResponse createPreference(@RequestBody MercadoPagoRequest mercadoPagoRequest, @RequestHeader("Authorization") String token);
+    MercadoPagoResponse createPreference(@RequestBody MercadoPagoRequest mercadoPagoRequest,
+                                         @RequestHeader("Authorization") String token);
 }

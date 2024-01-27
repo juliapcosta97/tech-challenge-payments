@@ -5,7 +5,6 @@
 *.war
 *.ear
 *.jar
-*.xml
 
 # Diretórios
 target/
@@ -59,3 +58,20 @@ build/
 # Configurações específicas de sistema operacional
 .DS_Store
 Thumbs.db
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### VS Code ###
+.vscode/
+
+out.json
