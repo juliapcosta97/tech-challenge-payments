@@ -14,7 +14,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseHttpException.class)
     public ResponseEntity<ErrorResponseDto> handleHttpException(BaseHttpException e) {
-        logger.error(String.format("GlobalExceptionHandler: %s", e.getMessage()));
         return ResponseEntity.status(e.getStatusCode()).body(new ErrorResponseDto(e.getMessage()));
     }
 }
