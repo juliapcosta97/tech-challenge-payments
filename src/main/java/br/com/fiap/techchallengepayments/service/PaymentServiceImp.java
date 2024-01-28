@@ -1,4 +1,72 @@
 package br.com.fiap.techchallengepayments.service;
 
-public class PaymentServiceImp {
+import br.com.fiap.techchallengepayments.config.AppConfig;
+import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
+import br.com.fiap.techchallengepayments.exception.LibException;
+import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
+import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
+import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
+import br.com.fiap.techchallengepayments.service.rest.MercadoPagoClient;
+import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponse;
+import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequest;
+import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import static br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequest.getPreferenceRequest;
+import static java.util.Objects.isNull;
+
+@Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
+public class PaymentServiceImp implements PaymentService {
+
+    private final MercadoPagoClient mercadoPagoClient;
+    private final ZxingServiceImp zxingServiceImp;
+    private final AppConfig appConfig;
+
+    private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImp.class);
+
+    @Override
+    public byte[] generateQrCode(PreferenceDTO preferenceDTO) {
+        try {
+            PaymentLinkDTO link = generatePaymentLink(preferenceDTO);
+            return zxingServiceImp.generateQrCode(link.getPaymentUrl());
+
+        } catch (LibException e) {
+            String errorMessage = String.format("%s in order_id: %s", e.getMessage(), preferenceDTO.getOrderId());
+            logger.error(errorMessage, e);
+
+            throw new FailedDependencyException(errorMessage);
+        }
+    }
+
+    @Override
+    public PaymentLinkDTO generatePaymentLink(PreferenceDTO preferenceDTO) {
+        MercadoPagoRequest mercadoPagoRequest = getPreferenceRequest(preferenceDTO);
+
+        try {
+            MercadoPagoResponse mercadoPagoResponse = mercadoPagoClient.createPreference(mercadoPagoRequest, appConfig.getToken());
+            validateResponse(mercadoPagoResponse, preferenceDTO.getOrderId());
+
+            String paymentUrl = mercadoPagoResponse.getInitPoint();
+            return PaymentLinkDTO.builder().paymentUrl(paymentUrl).build();
+
+        } catch (Exception e) {
+            String errorMessage = String.format("Error in Mercado Pago api call in order_id: %s", preferenceDTO.getOrderId());
+            logger.error(errorMessage, e);
+
+            throw new FailedDependencyException(errorMessage);
+        }
+    }
+
+    private void validateResponse(MercadoPagoResponse mercadoPagoResponse, Long orderId) {
+        if (isNull(mercadoPagoResponse)) {
+            String errorMessage = String.format("Error in Mercado Pago api call, response is null in order_id: %s", orderId);
+            logger.error(errorMessage);
+
+            throw new FailedDependencyException(errorMessage);
+        }
+    }
 }
