@@ -18,7 +18,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
-class PaymentServiceTest {
+
+class PaymentServiceOld {
 
     @Mock
     private MercadoPagoClient mercadoPagoClient;
