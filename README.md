@@ -11,6 +11,16 @@
 
 - O sistema deverá possuir uma opção de pagamento integrada, no caso, para MVP, a forma de pagamento oferecida será via QRCode do Mercado Pago.
 
+### Exemplos
+
+- QRCode
+
+![Captura de Tela 2024-01-27 às 16 19 15](https://github.com/juliapcosta97/tech-challenge-payments/assets/15149920/13ba5400-d68f-4a91-8dfc-930156f2591e)
+
+- Link de pagamento
+![Captura de Tela 2024-01-27 às 16 21 47](https://github.com/juliapcosta97/tech-challenge-payments/assets/15149920/9666e014-a507-41ee-aa39-a7205cfae2bb)
+
+
 ### Artefatos
 - [Repositório público de relatórios do SonarCloud](https://sonarcloud.io/project/overview?id=juliapcosta97_tech-challenge-payments)
 
