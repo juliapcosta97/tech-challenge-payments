@@ -1,6 +1,6 @@
 package br.com.fiap.techchallengepayments.controllers;
 
-import br.com.fiap.techchallengepayments.exception.dtos.ErrorResponseDto;
+import br.com.fiap.techchallengepayments.exception.dtos.ErrorResponseDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
@@ -34,17 +34,17 @@ public class PaymentController {
                     }),
             @ApiResponse(responseCode = "424", description = "Erro na integracao com o provedor de pagamentos",
                     content = {
-                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))
                     }
             ),
             @ApiResponse(responseCode = "424", description = "Erro na integracao com a biblioteca de geracao do QRCode",
                     content = {
-                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))
                     }
             ),
             @ApiResponse(responseCode = "400", description = "Dados inválidos para geracao do QRCode",
                     content = {
-                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))
                     }
             )
     })
@@ -62,17 +62,17 @@ public class PaymentController {
                     }),
             @ApiResponse(responseCode = "424", description = "Erro na integracao com o provedor de pagamentos",
                     content = {
-                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))
                     }
             ),
             @ApiResponse(responseCode = "424", description = "Erro na integracao com a biblioteca de geracao do QRCode",
                     content = {
-                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))
                     }
             ),
             @ApiResponse(responseCode = "400", description = "Dados inválidos para geracao do QRCode",
                     content = {
-                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDTO.class))
                     }
             )
     })

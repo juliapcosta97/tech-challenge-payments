@@ -1,4 +1,4 @@
-package br.com.fiap.techchallengepayments.service.units;
+package br.com.fiap.techchallengepayments.service.units.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -9,8 +9,8 @@ import br.com.fiap.techchallengepayments.service.PaymentServiceImp;
 import br.com.fiap.techchallengepayments.service.ZxingServiceImp;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
-import br.com.fiap.techchallengepayments.service.rest.MercadoPagoClient;
-import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponse;
+import br.com.fiap.techchallengepayments.service.rest.MercadoPagoRestService;
+import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 class PaymentServiceTest {
 
     @Mock
-    private MercadoPagoClient mercadoPagoClient;
+    private MercadoPagoRestService mercadoPagoRestService;
     @Mock
     private ZxingServiceImp zxingServiceImp;
     @Mock
@@ -48,8 +48,8 @@ class PaymentServiceTest {
 
     @Test
     void testGenerateQrCodeSuccess() {
-        MercadoPagoResponse mercadoPagoResponse = new MercadoPagoResponse("https://example.com/init-point");
-        when(mercadoPagoClient.createPreference(any(), any())).thenReturn(mercadoPagoResponse);
+        MercadoPagoResponseDTO mercadoPagoResponseDTO = new MercadoPagoResponseDTO("https://example.com/init-point");
+        when(mercadoPagoRestService.createPreference(any(), any())).thenReturn(mercadoPagoResponseDTO);
         when(zxingServiceImp.generateQrCode(anyString())).thenReturn(simulatedQrCode);
         when(appConfig.getToken()).thenReturn("token");
 
@@ -60,7 +60,7 @@ class PaymentServiceTest {
 
     @Test
     void testGenerateQrCodeException() {
-        when(mercadoPagoClient.createPreference(any(), any())).thenReturn(new MercadoPagoResponse("https://test.com/init-point"));
+        when(mercadoPagoRestService.createPreference(any(), any())).thenReturn(new MercadoPagoResponseDTO("https://test.com/init-point"));
         when(appConfig.getToken()).thenReturn("token");
         doThrow(new FailedDependencyException("error")).when(zxingServiceImp).generateQrCode(any());
 
@@ -69,8 +69,8 @@ class PaymentServiceTest {
 
     @Test
     void testGeneratePaymentLinkSuccess() {
-        MercadoPagoResponse mercadoPagoResponse = new MercadoPagoResponse("https://test.com/init-point");
-        when(mercadoPagoClient.createPreference(any(), any())).thenReturn(mercadoPagoResponse);
+        MercadoPagoResponseDTO mercadoPagoResponseDTO = new MercadoPagoResponseDTO("https://test.com/init-point");
+        when(mercadoPagoRestService.createPreference(any(), any())).thenReturn(mercadoPagoResponseDTO);
         when(zxingServiceImp.generateQrCode(anyString())).thenReturn(simulatedQrCode);
         when(appConfig.getToken()).thenReturn("token");
 
@@ -81,7 +81,7 @@ class PaymentServiceTest {
 
     @Test
     void testGeneratePaymentLinkException() {
-        when(mercadoPagoClient.createPreference(any(), any())).thenThrow(new RuntimeException("Simulating API exception"));
+        when(mercadoPagoRestService.createPreference(any(), any())).thenThrow(new RuntimeException("Simulating API exception"));
         when(zxingServiceImp.generateQrCode(anyString())).thenReturn(simulatedQrCode);
         when(appConfig.getToken()).thenReturn("token");
 
