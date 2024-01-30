@@ -1,9 +1,9 @@
-FROM adoptopenjdk:17-jre-hotspot
+FROM openjdk:17-oracle
 
 WORKDIR /app
 
-COPY target/your-application.jar /app/your-application.jar
+COPY target/sua-TechChallengePaymentsApplication.jar /app/sua-TechChallengePaymentsApplication.jar
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "your-application.jar"]
+CMD ["java", "-jar", "/app/sua-TechChallengePaymentsApplication.jar"]
