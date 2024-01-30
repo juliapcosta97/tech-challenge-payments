@@ -111,7 +111,6 @@
 								<exclude>br.com.fiap.techchallengepayments/config/*</exclude>
 								<exclude>br.com.fiap.techchallengepayments/exception/*</exclude>
 								<exclude>br.com.fiap.techchallengepayments/service/interfaces/*</exclude>
-								<exclude>**/*DTO.java</exclude>
 								<exclude>**/*Test.java</exclude>
 								<exclude>**/*RestService.java</exclude>
 							</excludes>
