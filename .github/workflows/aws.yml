@@ -1,57 +1,41 @@
-name: Deploy to Amazon ECR
+name: Docker Deploy
 
 on:
   push:
-    branches: [ "main" ]
-
-env:
-  BRANCH_NAME: ${{github.ref_name}}
-  APP_NAME: tech-challenge-payments
+    branches:
+      - main
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Check Branch Name
-        run: echo ${{ env.BRANCH_NAME }}
-
-      - name: Create Docker Tag
-        run: |
-          if [[ ${{env.BRANCH_NAME}} == 'main' ]]
-          then
-            DOCKER_TAG="latest-${{ github.sha }}"
-          else
-            DOCKER_TAG="${{env.BRANCH_NAME}}-latest-${{ github.sha }}"
-          fi
-          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
-
-      - name: Check Docker Tag
-        run: echo ${{ env.DOCKER_TAG }}
-
-      - name: Configure AWS credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        id: login-ecr-public
-        uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry-type: public
+          registry: ${{ secrets.ECR_REPOSITORY_URI }}
 
-      - name: Build and Push to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-          REGISTRY_ALIAS: "u0d1o6m1"
-          REPOSITORY: ${{ env.APP_NAME }}
-          IMAGE_TAG: ${{ env.DOCKER_TAG }}
+      - name: Build and Push Docker Image
+        id: build
         run: |
-          docker build -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
+          docker build -t ${{ secrets.ECR_REPOSITORY_URI }} .
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}
+
+      - name: Deploy to ECR
+        id: deploy
+        run: |
+
+      - name: Cleanup
+        id: cleanup
+        run: docker logout ${{ secrets.ECR_REPOSITORY_URI }}
