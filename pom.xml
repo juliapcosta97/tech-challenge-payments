@@ -106,6 +106,16 @@
 							<formats>
 								<format>XML</format>
 							</formats>
+
+							<excludes>
+								<exclude>br.com.fiap.techchallengepayments/config/*</exclude>
+								<exclude>br.com.fiap.techchallengepayments/exception/*</exclude>
+								<exclude>br.com.fiap.techchallengepayments/service/interfaces/*</exclude>
+								<exclude>**/*DTO.class</exclude>
+								<exclude>**/*Test.class</exclude>
+								<exclude>**/*RestService.class</exclude>
+							</excludes>
+
 						</configuration>
 					</execution>
 				</executions>

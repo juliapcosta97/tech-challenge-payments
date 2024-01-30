@@ -6,23 +6,23 @@ import br.com.fiap.techchallengepayments.exception.LibException;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
-import br.com.fiap.techchallengepayments.service.rest.MercadoPagoClient;
-import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponse;
-import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequest;
+import br.com.fiap.techchallengepayments.service.rest.MercadoPagoRestService;
+import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponseDTO;
+import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequestDTO;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequest.getPreferenceRequest;
+import static br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequestDTO.getPreferenceRequest;
 import static java.util.Objects.isNull;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PaymentServiceImp implements PaymentService {
 
-    private final MercadoPagoClient mercadoPagoClient;
+    private final MercadoPagoRestService mercadoPagoRestService;
     private final ZxingServiceImp zxingServiceImp;
     private final AppConfig appConfig;
 
@@ -44,13 +44,13 @@ public class PaymentServiceImp implements PaymentService {
 
     @Override
     public PaymentLinkDTO generatePaymentLink(PreferenceDTO preferenceDTO) {
-        MercadoPagoRequest mercadoPagoRequest = getPreferenceRequest(preferenceDTO);
+        MercadoPagoRequestDTO mercadoPagoRequestDTO = getPreferenceRequest(preferenceDTO);
 
         try {
-            MercadoPagoResponse mercadoPagoResponse = mercadoPagoClient.createPreference(mercadoPagoRequest, appConfig.getToken());
-            validateResponse(mercadoPagoResponse, preferenceDTO.getOrderId());
+            MercadoPagoResponseDTO mercadoPagoResponseDTO = mercadoPagoRestService.createPreference(mercadoPagoRequestDTO, appConfig.getToken());
+            validateResponse(mercadoPagoResponseDTO, preferenceDTO.getOrderId());
 
-            String paymentUrl = mercadoPagoResponse.getInitPoint();
+            String paymentUrl = mercadoPagoResponseDTO.getInitPoint();
             return PaymentLinkDTO.builder().paymentUrl(paymentUrl).build();
 
         } catch (Exception e) {
@@ -61,8 +61,8 @@ public class PaymentServiceImp implements PaymentService {
         }
     }
 
-    private void validateResponse(MercadoPagoResponse mercadoPagoResponse, Long orderId) {
-        if (isNull(mercadoPagoResponse)) {
+    private void validateResponse(MercadoPagoResponseDTO mercadoPagoResponseDTO, Long orderId) {
+        if (isNull(mercadoPagoResponseDTO)) {
             String errorMessage = String.format("Error in Mercado Pago api call, response is null in order_id: %s", orderId);
             logger.error(errorMessage);
 

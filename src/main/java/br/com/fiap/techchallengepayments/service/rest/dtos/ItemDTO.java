@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Item {
+public class ItemDTO {
 
     private String title;
     private int quantity;
@@ -24,8 +24,8 @@ public class Item {
     private BigDecimal unitPrice;
 
     @JsonIgnore
-    public static Item buildItem(PreferenceDTO preferenceDTO) {
-        return Item.builder()
+    public static ItemDTO buildItem(PreferenceDTO preferenceDTO) {
+        return ItemDTO.builder()
                 .currencyId("BRL")
                 .quantity(preferenceDTO.getQuantity())
                 .title(preferenceDTO.getTitle())

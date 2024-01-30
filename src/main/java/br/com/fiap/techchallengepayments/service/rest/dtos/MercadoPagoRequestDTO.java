@@ -11,39 +11,39 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 import java.util.List;
 
-import static br.com.fiap.techchallengepayments.service.rest.dtos.Item.buildItem;
+import static br.com.fiap.techchallengepayments.service.rest.dtos.ItemDTO.buildItem;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MercadoPagoRequest {
+public class MercadoPagoRequestDTO {
 
-    private List<Item> items;
+    private List<ItemDTO> itemDTOS;
     @JsonProperty("back_urls")
-    private BackUrls backUrls;
+    private BackUrlsDTO backUrlsDTO;
     @JsonProperty("auto_return")
     private String autoReturn;
     @JsonProperty("payment_methods")
-    private PaymentMethods paymentMethods;
+    private PaymentMethodsDTO paymentMethodsDTO;
 
     @JsonIgnore
-    public static MercadoPagoRequest getPreferenceRequest(PreferenceDTO preferenceDTO) {
-        Item item = buildItem(preferenceDTO);
-        ExcludedPaymentType excludedPaymentType = ExcludedPaymentType.builder().id("Ticket").build();
-        PaymentMethods paymentMethods = PaymentMethods.builder().excludedPaymentTypes(Arrays.asList(excludedPaymentType)).build();
+    public static MercadoPagoRequestDTO getPreferenceRequest(PreferenceDTO preferenceDTO) {
+        ItemDTO itemDTO = buildItem(preferenceDTO);
+        ExcludedPaymentTypeDTO excludedPaymentTypeDTO = ExcludedPaymentTypeDTO.builder().id("Ticket").build();
+        PaymentMethodsDTO paymentMethodsDTO = PaymentMethodsDTO.builder().excludedPaymentTypeDTOS(Arrays.asList(excludedPaymentTypeDTO)).build();
 
-        BackUrls backUrls = BackUrls.builder()
+        BackUrlsDTO backUrlsDTO = BackUrlsDTO.builder()
                 .failure(String.format("%s", preferenceDTO.getOrderId()))
                 .pending(String.format("%s", preferenceDTO.getOrderId()))
                 .success(String.format("%s", preferenceDTO.getOrderId()))
                 .build();
 
-        return MercadoPagoRequest.builder()
-                .items(Arrays.asList(item))
+        return MercadoPagoRequestDTO.builder()
+                .itemDTOS(Arrays.asList(itemDTO))
                 .autoReturn("approved")
-                .paymentMethods(paymentMethods)
-                .backUrls(backUrls)
+                .paymentMethodsDTO(paymentMethodsDTO)
+                .backUrlsDTO(backUrlsDTO)
                 .build();
     }
 }

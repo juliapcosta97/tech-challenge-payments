@@ -1,4 +1,4 @@
-package br.com.fiap.techchallengepayments.service.units;
+package br.com.fiap.techchallengepayments.service.units.service;
 
 import br.com.fiap.techchallengepayments.service.ZxingServiceImp;
 import org.junit.jupiter.api.BeforeEach;
