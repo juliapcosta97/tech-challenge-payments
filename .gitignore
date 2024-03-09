@@ -13,12 +13,12 @@ build/
 out/
 
 # Arquivos de configuração
-application.properties
-application.yml
-application-dev.properties
-application-dev.yml
-application-prod.properties
-application-prod.yml
+#application.properties
+#application.yml
+#application-dev.properties
+#application-dev.yml
+#application-prod.properties
+#application-prod.yml
 
 # Arquivos de log
 log/
