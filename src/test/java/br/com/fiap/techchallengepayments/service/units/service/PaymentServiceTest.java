@@ -1,5 +1,6 @@
 package br.com.fiap.techchallengepayments.service.units.service;
 
+import static br.com.fiap.techchallengepayments.service.enums.PaymentStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -7,8 +8,10 @@ import br.com.fiap.techchallengepayments.config.AppConfig;
 import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
 import br.com.fiap.techchallengepayments.service.PaymentServiceImp;
 import br.com.fiap.techchallengepayments.service.ZxingServiceImp;
+import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
+import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
 import br.com.fiap.techchallengepayments.service.rest.MercadoPagoRestService;
 import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,5 +89,11 @@ class PaymentServiceTest {
         when(appConfig.getToken()).thenReturn("token");
 
         assertThrows(FailedDependencyException.class, () -> paymentServiceImp.generatePaymentLink(preferenceDTO));
+    }
+
+    @Test
+    void testNotifyPaymentSuccess() {
+        CallbackPaymentDTO callbackPayment = paymentServiceImp.notifyPayment(SUCCESS);
+        assertEquals(SUCCESS, callbackPayment.getStatus());
     }
 }
