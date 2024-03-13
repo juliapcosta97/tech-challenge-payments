@@ -7,6 +7,7 @@ import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
+import br.com.fiap.techchallengepayments.service.interfaces.KafkaProducerService;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
 import br.com.fiap.techchallengepayments.service.rest.MercadoPagoRestService;
 import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequestDTO;
@@ -26,6 +27,7 @@ public class PaymentServiceImp implements PaymentService {
 
     private final MercadoPagoRestService mercadoPagoRestService;
     private final ZxingServiceImp zxingServiceImp;
+    private final KafkaProducerService kafkaProducerService;
     private final AppConfig appConfig;
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImp.class);
@@ -65,7 +67,9 @@ public class PaymentServiceImp implements PaymentService {
 
     @Override
     public CallbackPaymentDTO notifyPayment(PaymentStatus status) {
-        return CallbackPaymentDTO.builder().status(status).build();
+        CallbackPaymentDTO callbackPayment =  CallbackPaymentDTO.builder().status(status).build();
+        kafkaProducerService.sendMessage("orders-topic", callbackPayment);
+        return callbackPayment;
     }
 
     private void validateResponse(MercadoPagoResponseDTO mercadoPagoResponseDTO, Long orderId) {

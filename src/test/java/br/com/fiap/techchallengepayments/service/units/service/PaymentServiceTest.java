@@ -12,6 +12,7 @@ import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
+import br.com.fiap.techchallengepayments.service.interfaces.KafkaProducerService;
 import br.com.fiap.techchallengepayments.service.rest.MercadoPagoRestService;
 import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,8 @@ class PaymentServiceTest {
     private MercadoPagoRestService mercadoPagoRestService;
     @Mock
     private ZxingServiceImp zxingServiceImp;
+    @Mock
+    private KafkaProducerService kafkaProducerService;
     @Mock
     private AppConfig appConfig;
     @InjectMocks
@@ -95,5 +98,6 @@ class PaymentServiceTest {
     void testNotifyPaymentSuccess() {
         CallbackPaymentDTO callbackPayment = paymentServiceImp.notifyPayment(SUCCESS);
         assertEquals(SUCCESS, callbackPayment.getStatus());
+        verify(kafkaProducerService).sendMessage(any(),any());
     }
 }
