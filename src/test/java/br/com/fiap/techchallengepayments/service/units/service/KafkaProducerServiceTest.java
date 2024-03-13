@@ -12,7 +12,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-public class KafkaProducerServiceTest {
+class KafkaProducerServiceTest {
 
     @Mock
     private KafkaTemplate<String, Object> kafkaTemplate;
@@ -28,6 +28,6 @@ public class KafkaProducerServiceTest {
     @Test
     void testSendTopicMessagesSuccess() {
         kafkaProducerServiceImp.sendMessage("topic-name", new CallbackPaymentDTO());
-        verify(kafkaTemplate).send(any(),any());
+        verify(kafkaTemplate).send(any(), any());
     }
 }
