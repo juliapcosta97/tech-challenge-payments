@@ -19,7 +19,7 @@ import static br.com.fiap.techchallengepayments.service.rest.dtos.ItemDTO.buildI
 @NoArgsConstructor
 public class MercadoPagoRequestDTO {
 
-    private List<ItemDTO> itemDTOS;
+    private List<ItemDTO> items;
     @JsonProperty("back_urls")
     private BackUrlsDTO backUrlsDTO;
     @JsonProperty("auto_return")
@@ -32,15 +32,10 @@ public class MercadoPagoRequestDTO {
         ItemDTO itemDTO = buildItem(preferenceDTO);
         ExcludedPaymentTypeDTO excludedPaymentTypeDTO = ExcludedPaymentTypeDTO.builder().id("Ticket").build();
         PaymentMethodsDTO paymentMethodsDTO = PaymentMethodsDTO.builder().excludedPaymentTypeDTOS(Arrays.asList(excludedPaymentTypeDTO)).build();
-
-        BackUrlsDTO backUrlsDTO = BackUrlsDTO.builder()
-                .failure(String.format("%s", preferenceDTO.getOrderId()))
-                .pending(String.format("%s", preferenceDTO.getOrderId()))
-                .success(String.format("%s", preferenceDTO.getOrderId()))
-                .build();
+        BackUrlsDTO backUrlsDTO = BackUrlsDTO.buildBackUrls();
 
         return MercadoPagoRequestDTO.builder()
-                .itemDTOS(Arrays.asList(itemDTO))
+                .items(Arrays.asList(itemDTO))
                 .autoReturn("approved")
                 .paymentMethodsDTO(paymentMethodsDTO)
                 .backUrlsDTO(backUrlsDTO)

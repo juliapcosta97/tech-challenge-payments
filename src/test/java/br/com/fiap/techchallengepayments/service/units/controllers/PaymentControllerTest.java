@@ -1,6 +1,7 @@
 package br.com.fiap.techchallengepayments.service.units.controllers;
 
 import br.com.fiap.techchallengepayments.controllers.PaymentController;
+import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static br.com.fiap.techchallengepayments.service.enums.PaymentStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -29,27 +31,40 @@ class PaymentControllerTest {
 
     @Test
     void testGenerateQrCodeSuccess() {
-        PreferenceDTO preference = new PreferenceDTO();
-        byte[] qrCodeBytes = "mocked-qrcode-bytes".getBytes();
+        var preference = new PreferenceDTO();
+        var qrCodeBytes = "mocked-qrcode-bytes".getBytes();
 
         when(paymentService.generateQrCode(any(PreferenceDTO.class))).thenReturn(qrCodeBytes);
 
-        byte[] result = paymentController.generateQrCode(preference);
+        var result = paymentController.generateQrCode(preference);
 
         assertNotNull(result);
-        assertArrayEquals(qrCodeBytes, result);
+        assertArrayEquals(qrCodeBytes, (byte[]) result.getBody());
     }
 
     @Test
     void testGeneratePaymentLinkSuccess() {
-        PreferenceDTO preference = new PreferenceDTO();
-        PaymentLinkDTO paymentLinkDTO = new PaymentLinkDTO();
+        var preference = new PreferenceDTO();
+        var paymentLinkDTO = new PaymentLinkDTO();
 
         when(paymentService.generatePaymentLink(any(PreferenceDTO.class))).thenReturn(paymentLinkDTO);
 
-        PaymentLinkDTO result = paymentController.generatePaymentLink(preference);
+        var result = paymentController.generatePaymentLink(preference);
 
         assertNotNull(result);
-        assertEquals(paymentLinkDTO, result);
+        assertEquals(paymentLinkDTO, result.getBody());
+    }
+
+    @Test
+    void shouldNotifySuccess_OnNotifyPayment_WhenPaymentIsApproved() {
+        var callbackPayment = new CallbackPaymentDTO();
+        callbackPayment.setStatus(SUCCESS);
+
+        when(paymentService.notifyPayment(any())).thenReturn(callbackPayment);
+
+        var result = paymentController.notifyPayment(SUCCESS);
+
+        assertNotNull(result);
+        assertEquals(callbackPayment, result.getBody());
     }
 }

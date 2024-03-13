@@ -1,8 +1,10 @@
 package br.com.fiap.techchallengepayments.controllers;
 
 import br.com.fiap.techchallengepayments.exception.dtos.ErrorResponseDTO;
+import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
+import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,11 +16,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -51,8 +50,9 @@ public class PaymentController {
     @Tag(name = "Pagamento via QRCode", description = "Servico para geracao da imagem do QRCode para pagamento no Mercado Pago")
     @PostMapping(path = "/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public byte[] generateQrCode(@Valid @RequestBody PreferenceDTO preference) {
-        return paymentService.generateQrCode(preference);
+    public ResponseEntity<byte[]> generateQrCode(@Valid @RequestBody PreferenceDTO preference) {
+        byte[] response = paymentService.generateQrCode(preference);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @ApiResponses(value = {
@@ -79,7 +79,22 @@ public class PaymentController {
     @PostMapping("/link")
     @ResponseStatus(HttpStatus.CREATED)
     @Tag(name = "Link de pagamento", description = "Servico para geracao do link de pagamento no Mercado Pago")
-    public PaymentLinkDTO generatePaymentLink(@Valid @RequestBody PreferenceDTO preference) {
-        return paymentService.generatePaymentLink(preference);
+    public ResponseEntity<PaymentLinkDTO> generatePaymentLink(@Valid @RequestBody PreferenceDTO preference) {
+        PaymentLinkDTO response = paymentService.generatePaymentLink(preference);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "URL de callback para notificar o status de pagamento",
+                    content = {
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = byte[].class))
+                    })
+    })
+    @GetMapping("/notify")
+    @ResponseStatus(HttpStatus.OK)
+    @Tag(name = "URL de callback", description = "URL de callback para notificar o status de pagamento")
+    public ResponseEntity<CallbackPaymentDTO> notifyPayment(@Valid @RequestParam(required = true, value = "status") PaymentStatus status) {
+        CallbackPaymentDTO response = paymentService.notifyPayment(status);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

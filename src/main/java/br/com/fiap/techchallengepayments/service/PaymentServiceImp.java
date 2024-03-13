@@ -3,12 +3,14 @@ package br.com.fiap.techchallengepayments.service;
 import br.com.fiap.techchallengepayments.config.AppConfig;
 import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
 import br.com.fiap.techchallengepayments.exception.LibException;
+import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
+import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
 import br.com.fiap.techchallengepayments.service.rest.MercadoPagoRestService;
-import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponseDTO;
 import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoRequestDTO;
+import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponseDTO;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +61,11 @@ public class PaymentServiceImp implements PaymentService {
 
             throw new FailedDependencyException(errorMessage);
         }
+    }
+
+    @Override
+    public CallbackPaymentDTO notifyPayment(PaymentStatus status) {
+        return CallbackPaymentDTO.builder().status(status).build();
     }
 
     private void validateResponse(MercadoPagoResponseDTO mercadoPagoResponseDTO, Long orderId) {
