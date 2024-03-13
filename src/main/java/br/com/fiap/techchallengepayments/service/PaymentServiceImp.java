@@ -65,9 +65,7 @@ public class PaymentServiceImp implements PaymentService {
 
     @Override
     public CallbackPaymentDTO notifyPayment(PaymentStatus status) {
-        CallbackPaymentDTO callbackPaymentDTO = CallbackPaymentDTO.builder().status(status).build();
-        //TODO enviar status de pagamento para fila (mensageria)
-        return callbackPaymentDTO;
+        return CallbackPaymentDTO.builder().status(status).build();
     }
 
     private void validateResponse(MercadoPagoResponseDTO mercadoPagoResponseDTO, Long orderId) {

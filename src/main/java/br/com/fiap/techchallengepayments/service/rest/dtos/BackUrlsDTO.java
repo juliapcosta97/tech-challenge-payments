@@ -22,12 +22,10 @@ public class BackUrlsDTO {
     public static BackUrlsDTO buildBackUrls() {
         String callbackUrl = "/api/payment/notify?status=%s";
 
-        BackUrlsDTO backUrlsDTO = BackUrlsDTO.builder()
+        return BackUrlsDTO.builder()
                 .failure(String.format("%s%s", callbackUrl, SUCCESS))
                 .pending(String.format("%s%s", callbackUrl, PENDING))
                 .success(String.format("%s%s", callbackUrl, FAILURE))
                 .build();
-
-        return backUrlsDTO;
     }
 }

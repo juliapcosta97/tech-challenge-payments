@@ -50,7 +50,7 @@ public class PaymentController {
     @Tag(name = "Pagamento via QRCode", description = "Servico para geracao da imagem do QRCode para pagamento no Mercado Pago")
     @PostMapping(path = "/qrcode", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> generateQrCode(@Valid @RequestBody PreferenceDTO preference) {
+    public ResponseEntity<byte[]> generateQrCode(@Valid @RequestBody PreferenceDTO preference) {
         byte[] response = paymentService.generateQrCode(preference);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -79,7 +79,7 @@ public class PaymentController {
     @PostMapping("/link")
     @ResponseStatus(HttpStatus.CREATED)
     @Tag(name = "Link de pagamento", description = "Servico para geracao do link de pagamento no Mercado Pago")
-    public ResponseEntity<?> generatePaymentLink(@Valid @RequestBody PreferenceDTO preference) {
+    public ResponseEntity<PaymentLinkDTO> generatePaymentLink(@Valid @RequestBody PreferenceDTO preference) {
         PaymentLinkDTO response = paymentService.generatePaymentLink(preference);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -93,7 +93,7 @@ public class PaymentController {
     @GetMapping("/notify")
     @ResponseStatus(HttpStatus.OK)
     @Tag(name = "URL de callback", description = "URL de callback para notificar o status de pagamento")
-    public ResponseEntity<?> notifyPayment(@Valid @RequestParam(required = true, value = "status") PaymentStatus status) {
+    public ResponseEntity<CallbackPaymentDTO> notifyPayment(@Valid @RequestParam(required = true, value = "status") PaymentStatus status) {
         CallbackPaymentDTO response = paymentService.notifyPayment(status);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
