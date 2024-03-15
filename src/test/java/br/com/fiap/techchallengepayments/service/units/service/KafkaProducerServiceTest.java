@@ -27,7 +27,7 @@ class KafkaProducerServiceTest {
 
     @Test
     void testSendTopicMessagesSuccess() {
-        kafkaProducerServiceImp.sendMessage("topic-name", new CallbackPaymentDTO());
+        kafkaProducerServiceImp.publish("topic-name", new CallbackPaymentDTO());
         verify(kafkaTemplate).send(any(), any());
     }
 }

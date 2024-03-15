@@ -9,9 +9,9 @@ import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
 import br.com.fiap.techchallengepayments.service.PaymentServiceImp;
 import br.com.fiap.techchallengepayments.service.ZxingServiceImp;
 import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
+import br.com.fiap.techchallengepayments.service.dtos.NotifyResponseDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
-import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
 import br.com.fiap.techchallengepayments.service.interfaces.KafkaProducerService;
 import br.com.fiap.techchallengepayments.service.rest.MercadoPagoRestService;
 import br.com.fiap.techchallengepayments.service.rest.dtos.MercadoPagoResponseDTO;
@@ -96,8 +96,8 @@ class PaymentServiceTest {
 
     @Test
     void testNotifyPaymentSuccess() {
-        CallbackPaymentDTO callbackPayment = paymentServiceImp.notifyPayment(SUCCESS);
-        assertEquals(SUCCESS, callbackPayment.getStatus());
-        verify(kafkaProducerService).sendMessage(any(),any());
+        NotifyResponseDTO notifyResponseDTO = paymentServiceImp.notifyPayment(SUCCESS);
+        assertEquals("Topic created successfully", notifyResponseDTO.getMessage());
+        verify(kafkaProducerService).publish(any(),any());
     }
 }

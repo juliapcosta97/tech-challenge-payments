@@ -2,6 +2,7 @@ package br.com.fiap.techchallengepayments.controllers;
 
 import br.com.fiap.techchallengepayments.exception.dtos.ErrorResponseDTO;
 import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
+import br.com.fiap.techchallengepayments.service.dtos.NotifyResponseDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
@@ -93,8 +94,8 @@ public class PaymentController {
     @GetMapping("/notify")
     @ResponseStatus(HttpStatus.OK)
     @Tag(name = "URL de callback", description = "URL de callback para notificar o status de pagamento")
-    public ResponseEntity<CallbackPaymentDTO> notifyPayment(@Valid @RequestParam(required = true, value = "status") PaymentStatus status) {
-        CallbackPaymentDTO response = paymentService.notifyPayment(status);
+    public ResponseEntity<NotifyResponseDTO> notifyPayment(@Valid @RequestParam(required = true, value = "status") PaymentStatus status) {
+        NotifyResponseDTO response = paymentService.notifyPayment(status);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

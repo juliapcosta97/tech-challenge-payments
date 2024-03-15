@@ -4,6 +4,7 @@ import br.com.fiap.techchallengepayments.config.AppConfig;
 import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
 import br.com.fiap.techchallengepayments.exception.LibException;
 import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
+import br.com.fiap.techchallengepayments.service.dtos.NotifyResponseDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
@@ -66,10 +67,14 @@ public class PaymentServiceImp implements PaymentService {
     }
 
     @Override
-    public CallbackPaymentDTO notifyPayment(PaymentStatus status) {
+    public NotifyResponseDTO notifyPayment(PaymentStatus status) {
+        kafkaProducerService.publish(appConfig.getKafkaTopicName(), getTopicMessage(status));
+        return NotifyResponseDTO.builder().message("Topic created successfully").build();
+    }
+
+    private String getTopicMessage(PaymentStatus status) {
         CallbackPaymentDTO callbackPayment =  CallbackPaymentDTO.builder().status(status).build();
-        kafkaProducerService.sendMessage("orders-topic", callbackPayment);
-        return callbackPayment;
+        return CallbackPaymentDTO.convertToJson(callbackPayment);
     }
 
     private void validateResponse(MercadoPagoResponseDTO mercadoPagoResponseDTO, Long orderId) {

@@ -2,6 +2,7 @@ package br.com.fiap.techchallengepayments.service.units.controllers;
 
 import br.com.fiap.techchallengepayments.controllers.PaymentController;
 import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
+import br.com.fiap.techchallengepayments.service.dtos.NotifyResponseDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PaymentLinkDTO;
 import br.com.fiap.techchallengepayments.service.dtos.PreferenceDTO;
 import br.com.fiap.techchallengepayments.service.interfaces.PaymentService;
@@ -57,14 +58,14 @@ class PaymentControllerTest {
 
     @Test
     void shouldNotifySuccess_OnNotifyPayment_WhenPaymentIsApproved() {
-        var callbackPayment = new CallbackPaymentDTO();
-        callbackPayment.setStatus(SUCCESS);
+        var notifyResponseDTO = new NotifyResponseDTO();
+        notifyResponseDTO.setMessage("Topic created successfully");
 
-        when(paymentService.notifyPayment(any())).thenReturn(callbackPayment);
+        when(paymentService.notifyPayment(any())).thenReturn(notifyResponseDTO);
 
         var result = paymentController.notifyPayment(SUCCESS);
 
         assertNotNull(result);
-        assertEquals(callbackPayment, result.getBody());
+        assertEquals(notifyResponseDTO, result.getBody());
     }
 }

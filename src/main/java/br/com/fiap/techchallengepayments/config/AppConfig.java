@@ -12,4 +12,7 @@ public class AppConfig {
 
     @Value("${mp.token}")
     public String token;
+
+    @Value("${kafka.topic-name}")
+    public String KafkaTopicName;
 }

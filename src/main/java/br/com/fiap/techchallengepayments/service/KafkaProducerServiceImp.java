@@ -13,7 +13,7 @@ public class KafkaProducerServiceImp implements KafkaProducerService {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public void sendMessage(String topic, Object data) {
+    public void publish(String topic, Object data) {
         kafkaTemplate.send(topic, data);
     }
 }

@@ -4,5 +4,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface KafkaProducerService {
-    void sendMessage(String topic, Object message);
+    void publish(String topic, Object message);
 }
