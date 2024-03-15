@@ -94,8 +94,8 @@ public class PaymentController {
     @GetMapping("/notify")
     @ResponseStatus(HttpStatus.OK)
     @Tag(name = "URL de callback", description = "URL de callback para notificar o status de pagamento")
-    public ResponseEntity<NotifyResponseDTO> notifyPayment(@Valid @RequestParam(required = true, value = "status") PaymentStatus status) {
-        NotifyResponseDTO response = paymentService.notifyPayment(status);
+    public ResponseEntity<NotifyResponseDTO> notifyPayment(@Valid @RequestParam(required = true, value = "status") PaymentStatus status, @Valid @RequestParam(required = true, value = "order_id") Long orderId) {
+        NotifyResponseDTO response = paymentService.notifyPayment(status, orderId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

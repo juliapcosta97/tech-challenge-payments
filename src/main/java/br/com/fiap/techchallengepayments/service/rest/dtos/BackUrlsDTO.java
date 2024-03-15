@@ -19,13 +19,14 @@ public class BackUrlsDTO {
     private String pending;
 
     @JsonIgnore
-    public static BackUrlsDTO buildBackUrls() {
-        String callbackUrl = "/api/payment/notify?status=%s";
+    public static BackUrlsDTO buildBackUrls(Long orderId) {
+        String order = orderId.toString();
+        String callbackUrl = "/api/payment/notify?status=%s&order_id=%s";
 
         return BackUrlsDTO.builder()
-                .failure(String.format("%s%s", callbackUrl, SUCCESS))
-                .pending(String.format("%s%s", callbackUrl, PENDING))
-                .success(String.format("%s%s", callbackUrl, FAILURE))
+                .failure(String.format(callbackUrl, SUCCESS, order))
+                .pending(String.format(callbackUrl, PENDING, order))
+                .success(String.format(callbackUrl, FAILURE, order))
                 .build();
     }
 }

@@ -32,7 +32,7 @@ public class MercadoPagoRequestDTO {
         ItemDTO itemDTO = buildItem(preferenceDTO);
         ExcludedPaymentTypeDTO excludedPaymentTypeDTO = ExcludedPaymentTypeDTO.builder().id("Ticket").build();
         PaymentMethodsDTO paymentMethodsDTO = PaymentMethodsDTO.builder().excludedPaymentTypeDTOS(Arrays.asList(excludedPaymentTypeDTO)).build();
-        BackUrlsDTO backUrlsDTO = BackUrlsDTO.buildBackUrls();
+        BackUrlsDTO backUrlsDTO = BackUrlsDTO.buildBackUrls(preferenceDTO.getOrderId());
 
         return MercadoPagoRequestDTO.builder()
                 .items(Arrays.asList(itemDTO))

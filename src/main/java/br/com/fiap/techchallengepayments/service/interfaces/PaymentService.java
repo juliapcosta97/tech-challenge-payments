@@ -11,5 +11,5 @@ import org.springframework.stereotype.Service;
 public interface PaymentService {
     byte[] generateQrCode(PreferenceDTO preference);
     PaymentLinkDTO generatePaymentLink(PreferenceDTO preferenceDTO);
-    NotifyResponseDTO notifyPayment(PaymentStatus status);
+    NotifyResponseDTO notifyPayment(PaymentStatus status, Long orderId);
 }

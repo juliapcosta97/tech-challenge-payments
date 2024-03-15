@@ -67,13 +67,14 @@ public class PaymentServiceImp implements PaymentService {
     }
 
     @Override
-    public NotifyResponseDTO notifyPayment(PaymentStatus status) {
-        kafkaProducerService.publish(appConfig.getKafkaTopicName(), getTopicMessage(status));
+    public NotifyResponseDTO notifyPayment(PaymentStatus status, Long orderId) {
+        String topicMessages = getTopicMessage(status, orderId);
+        kafkaProducerService.publish(appConfig.getKafkaTopicName(), topicMessages);
         return NotifyResponseDTO.builder().message("Topic created successfully").build();
     }
 
-    private String getTopicMessage(PaymentStatus status) {
-        CallbackPaymentDTO callbackPayment =  CallbackPaymentDTO.builder().status(status).build();
+    private String getTopicMessage(PaymentStatus status, Long orderId) {
+        CallbackPaymentDTO callbackPayment = CallbackPaymentDTO.builder().status(status).orderId(orderId).build();
         return CallbackPaymentDTO.convertToJson(callbackPayment);
     }
 

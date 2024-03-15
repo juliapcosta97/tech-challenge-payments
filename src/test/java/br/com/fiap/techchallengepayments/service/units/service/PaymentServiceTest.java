@@ -96,7 +96,7 @@ class PaymentServiceTest {
 
     @Test
     void testNotifyPaymentSuccess() {
-        NotifyResponseDTO notifyResponseDTO = paymentServiceImp.notifyPayment(SUCCESS);
+        NotifyResponseDTO notifyResponseDTO = paymentServiceImp.notifyPayment(SUCCESS, 1L);
         assertEquals("Topic created successfully", notifyResponseDTO.getMessage());
         verify(kafkaProducerService).publish(any(),any());
     }

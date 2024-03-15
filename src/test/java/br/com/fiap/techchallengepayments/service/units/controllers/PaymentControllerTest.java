@@ -61,9 +61,9 @@ class PaymentControllerTest {
         var notifyResponseDTO = new NotifyResponseDTO();
         notifyResponseDTO.setMessage("Topic created successfully");
 
-        when(paymentService.notifyPayment(any())).thenReturn(notifyResponseDTO);
+        when(paymentService.notifyPayment(any(), any())).thenReturn(notifyResponseDTO);
 
-        var result = paymentController.notifyPayment(SUCCESS);
+        var result = paymentController.notifyPayment(SUCCESS, 1L);
 
         assertNotNull(result);
         assertEquals(notifyResponseDTO, result.getBody());
