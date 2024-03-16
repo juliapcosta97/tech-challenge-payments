@@ -11,6 +11,15 @@
 
 - O sistema deverá possuir uma opção de pagamento integrada, no caso, para MVP, a forma de pagamento oferecida será via QRCode do Mercado Pago.
 
+### Tutorial de Execução do código
+
+- Executar o comando docker-compose -f docker-compose.yml up -d para subir a aplicação e os serviços que ela tem dependência (Kafka)
+
+### Relatórios OWASP
+
+- Antes: [ZAP Scanning Report](https://github.com/juliapcosta97/tech-challenge-payments/blob/main/owasp/2024-03-16-ZAP-Report-.html)
+- Depois: [ZAP Scanning Report](https://github.com/juliapcosta97/tech-challenge-payments/blob/main/owasp/2024-03-16-ZAP-Report-.html)
+
 ### Exemplos
 
 - QRCode
@@ -24,7 +33,5 @@
 ### Artefatos
 - [Repositório público de relatórios do SonarCloud](https://sonarcloud.io/project/overview?id=juliapcosta97_tech-challenge-payments)
 
-### Tutorial de Execução do código
 
-- Executar o comando docker-compose -f docker-compose.yml up -d para subir a aplicação e os serviços que ela tem dependência (Kafka e OWASP ZAP)
 
