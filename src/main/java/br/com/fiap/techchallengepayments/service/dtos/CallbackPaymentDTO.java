@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CallbackPaymentDTO {
 
-    @JsonProperty("order_id")
     private Long orderId;
 
     public static String convertToJson(CallbackPaymentDTO callbackPaymentDTO) {
