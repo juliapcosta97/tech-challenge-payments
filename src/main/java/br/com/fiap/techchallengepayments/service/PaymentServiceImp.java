@@ -1,6 +1,7 @@
 package br.com.fiap.techchallengepayments.service;
 
 import br.com.fiap.techchallengepayments.config.AppConfig;
+import br.com.fiap.techchallengepayments.exception.BadRequestException;
 import br.com.fiap.techchallengepayments.exception.FailedDependencyException;
 import br.com.fiap.techchallengepayments.exception.LibException;
 import br.com.fiap.techchallengepayments.service.dtos.CallbackPaymentDTO;
@@ -32,6 +33,10 @@ public class PaymentServiceImp implements PaymentService {
     private final AppConfig appConfig;
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImp.class);
+
+    private final String PAYMENT_APPROVED = "pagamento.aceito";
+    private final String PAYMENT_REJECTED = "pagamento.recusado";
+    private final String PAYMENT_PENDING = "pagamento.pendente";
 
     @Override
     public byte[] generateQrCode(PreferenceDTO preferenceDTO) {
@@ -68,13 +73,33 @@ public class PaymentServiceImp implements PaymentService {
 
     @Override
     public NotifyResponseDTO notifyPayment(PaymentStatus status, Long orderId) {
-        String topicMessages = getTopicMessage(status, orderId);
-        kafkaProducerService.publish(appConfig.getKafkaTopicName(), topicMessages);
+        String topicMessages = getTopicMessage(orderId);
+        String topicName = getPaymentTopicByStatus(status);
+        kafkaProducerService.publish(topicName, topicMessages);
         return NotifyResponseDTO.builder().message("Topic created successfully").build();
     }
 
-    private String getTopicMessage(PaymentStatus status, Long orderId) {
-        CallbackPaymentDTO callbackPayment = CallbackPaymentDTO.builder().status(status).orderId(orderId).build();
+    private String getPaymentTopicByStatus(PaymentStatus status) {
+        switch (status) {
+            case SUCCESS -> {
+                return PAYMENT_APPROVED;
+            }
+            case PENDING -> {
+                return PAYMENT_PENDING;
+            }
+            case FAILURE -> {
+                return PAYMENT_REJECTED;
+            }
+            default -> {
+                String errorMessage = "Payment status is invalid";
+                logger.error(errorMessage);
+                throw new BadRequestException(errorMessage);
+            }
+        }
+    }
+
+    private String getTopicMessage(Long orderId) {
+        CallbackPaymentDTO callbackPayment = CallbackPaymentDTO.builder().orderId(orderId).build();
         return CallbackPaymentDTO.convertToJson(callbackPayment);
     }
 

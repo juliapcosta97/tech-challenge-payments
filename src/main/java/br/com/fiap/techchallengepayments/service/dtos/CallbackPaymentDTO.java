@@ -1,6 +1,5 @@
 package br.com.fiap.techchallengepayments.service.dtos;
 
-import br.com.fiap.techchallengepayments.service.enums.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CallbackPaymentDTO {
 
-    private PaymentStatus status;
     @JsonProperty("order_id")
     private Long orderId;
 
