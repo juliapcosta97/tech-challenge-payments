@@ -57,7 +57,7 @@ public class PaymentServiceImp implements PaymentService {
         MercadoPagoRequestDTO mercadoPagoRequestDTO = getPreferenceRequest(preferenceDTO);
 
         try {
-            MercadoPagoResponseDTO mercadoPagoResponseDTO = mercadoPagoRestService.createPreference(mercadoPagoRequestDTO, appConfig.getToken());
+            MercadoPagoResponseDTO mercadoPagoResponseDTO = mercadoPagoRestService.createPreference(mercadoPagoRequestDTO, "Bearer " + appConfig.getToken());
             validateResponse(mercadoPagoResponseDTO, preferenceDTO.getOrderId());
 
             String paymentUrl = mercadoPagoResponseDTO.getInitPoint();
