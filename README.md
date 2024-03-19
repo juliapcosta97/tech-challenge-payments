@@ -29,6 +29,12 @@
 - Link de pagamento
 ![Captura de Tela 2024-01-27 às 16 21 47](https://github.com/juliapcosta97/tech-challenge-payments/assets/15149920/9666e014-a507-41ee-aa39-a7205cfae2bb)
 
+- Endpoint de callback para o Webhook
+
+  curl --location 'http://localhost:8080/api/payment/notify?status=SUCCESS&order_id=2253526'
+
+  POssiveis status: SUCCESS / PENDING / FAILURE
+
 
 ### Artefatos
 - [Repositório público de relatórios do SonarCloud](https://sonarcloud.io/project/overview?id=juliapcosta97_tech-challenge-payments)
