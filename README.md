@@ -33,7 +33,7 @@
 
   curl --location 'http://localhost:8080/api/payment/notify?status=SUCCESS&order_id=2253526'
 
-  POssiveis status: SUCCESS / PENDING / FAILURE
+  Possiveis status: SUCCESS / PENDING / FAILURE
 
 
 ### Artefatos
